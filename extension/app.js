@@ -1477,6 +1477,22 @@ document.addEventListener('input', async (e) => {
 
 
 /* ----------------------------------------------------------------
+   LIVE CLOCK — updates every second in the header
+   ---------------------------------------------------------------- */
+function updateClock() {
+  const el = document.getElementById('liveClock');
+  if (!el) return;
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  el.innerHTML = `${h}:${m}<span class="clock-seconds">${s}</span>`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ----------------------------------------------------------------
    INITIALIZE
    ---------------------------------------------------------------- */
 renderDashboard();

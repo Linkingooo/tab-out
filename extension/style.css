@@ -5,19 +5,26 @@
    ============================================================ */
 
 :root {
-  --ink: #1a1613;
-  --paper: #f8f5f0;
+  --ink: #1e1b18;
+  --paper: #faf7f2;
   --warm-gray: #e8e2da;
   --muted: #9a918a;
-  --accent-amber: #c8713a;
+  --accent-amber: #d4793e;
   --accent-sage: #5a7a62;
   --accent-slate: #5a6b7a;
   --accent-rose: #b35a5a;
   --status-active: #3d7a4a;
   --status-cooling: #b8892e;
   --status-abandoned: #b35a5a;
-  --card-bg: #fffdf9;
+  --card-bg: rgba(255, 253, 249, 0.72);
+  --card-border: rgba(232, 226, 218, 0.6);
   --shadow: rgba(26, 22, 19, 0.06);
+  --shadow-hover: rgba(26, 22, 19, 0.12);
+  --glass-blur: 12px;
+  --gradient-1: #f0e6d8;
+  --gradient-2: #e2ece5;
+  --gradient-3: #dde6ef;
+  --gradient-4: #f5e4dc;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,14 +37,35 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle paper texture */
+/* Animated mesh gradient background */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background:
+    radial-gradient(ellipse at 15% 20%, var(--gradient-1) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 25%, var(--gradient-2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, var(--gradient-3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 75%, var(--gradient-4) 0%, transparent 40%);
+  background-color: var(--paper);
+  animation: bgShift 20s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Subtle paper texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes bgShift {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(8deg); }
 }
 
 .container {
@@ -58,19 +86,19 @@ body::before {
 header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   margin-bottom: 48px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--warm-gray);
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--card-border);
 }
 
 .header-left h1 {
   font-family: 'Newsreader', serif;
   font-weight: 300;
-  font-size: 28px;
+  font-size: 32px;
   letter-spacing: -0.5px;
   color: var(--ink);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .header-left .date {
@@ -81,11 +109,32 @@ header {
   text-transform: uppercase;
 }
 
+/* ---- Live clock ---- */
+.header-clock {
+  font-family: 'Newsreader', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+.header-clock .clock-seconds {
+  font-size: 20px;
+  color: var(--muted);
+  font-weight: 300;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
 /* ---- Tab cleanup banner ---- */
 .tab-cleanup-banner {
-  background: linear-gradient(135deg, rgba(200, 113, 58, 0.04), rgba(200, 113, 58, 0.09));
+  background: linear-gradient(135deg, rgba(200, 113, 58, 0.05), rgba(200, 113, 58, 0.10));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid rgba(200, 113, 58, 0.18);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px 24px;
   display: flex;
   align-items: center;
@@ -131,18 +180,19 @@ header {
   font-size: 12px;
   font-weight: 600;
   padding: 8px 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: none;
-  background: var(--accent-amber);
+  background: linear-gradient(135deg, var(--accent-amber), #b8632e);
   color: white;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(200, 113, 58, 0.25);
 }
 
 .tab-cleanup-btn:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(200, 113, 58, 0.35);
 }
 
 /* ---- Nudge banner ---- */
@@ -205,7 +255,7 @@ header {
 .section-line {
   flex: 1;
   height: 1px;
-  background: var(--warm-gray);
+  background: linear-gradient(90deg, var(--warm-gray), transparent);
 }
 
 .section-count {
@@ -225,21 +275,25 @@ header {
 
 .mission-card {
   background: var(--card-bg);
-  border: 1px solid var(--warm-gray);
-  border-radius: 8px;
-  padding: 16px 18px;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  break-inside: avoid;       /* don't split a card across columns */
-  margin-bottom: 12px;       /* vertical spacing (replaces grid gap) */
+  break-inside: avoid;
+  margin-bottom: 14px;
 }
 
-/* Colored top border instead of side bar for grid cards */
+/* Colored top border — now with gradient */
 .mission-card::before {
   content: '';
   position: absolute;
@@ -247,23 +301,29 @@ header {
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--warm-gray);
+  background: linear-gradient(90deg, var(--warm-gray), transparent);
+  transition: height 0.3s ease;
 }
 
-.mission-card.has-active-bar::before { background: var(--status-active); }
-.mission-card.has-amber-bar::before { background: var(--accent-amber); }
-.mission-card.has-neutral-bar::before { background: var(--warm-gray); }
+.mission-card.has-active-bar::before { background: linear-gradient(90deg, var(--status-active), rgba(61, 122, 74, 0.2)); }
+.mission-card.has-amber-bar::before { background: linear-gradient(90deg, var(--accent-amber), rgba(212, 121, 62, 0.2)); }
+.mission-card.has-neutral-bar::before { background: linear-gradient(90deg, var(--warm-gray), transparent); }
 
 .mission-card:hover {
-  box-shadow: 0 4px 20px var(--shadow);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 32px var(--shadow-hover), 0 2px 8px var(--shadow);
+  transform: translateY(-3px);
+  border-color: rgba(200, 113, 58, 0.2);
+}
+
+.mission-card:hover::before {
+  height: 4px;
 }
 
 /* Closing animation — card scales down and fades out */
 .mission-card.closing {
   opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: scale(0.92) translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
@@ -425,9 +485,9 @@ header {
   color: var(--muted);
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: 6px;
   opacity: 0.35;
-  transition: opacity 0.15s, color 0.15s, background 0.15s;
+  transition: opacity 0.2s, color 0.2s, background 0.2s, transform 0.2s;
   flex-shrink: 0;
 }
 
@@ -438,26 +498,29 @@ header {
 
 .chip-action:hover {
   opacity: 1;
-  background: rgba(154, 145, 138, 0.1);
+  background: rgba(154, 145, 138, 0.12);
+  transform: scale(1.1);
 }
 
 .chip-save:hover {
   color: var(--accent-sage);
-  background: rgba(90, 122, 98, 0.08);
+  background: rgba(90, 122, 98, 0.12);
 }
 
 .chip-close:hover {
   color: var(--status-abandoned);
-  background: rgba(179, 90, 90, 0.08);
+  background: rgba(179, 90, 90, 0.12);
 }
 
 .page-chip.clickable {
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.2s ease, padding-left 0.2s ease;
+  border-radius: 6px;
 }
 
 .page-chip.clickable:hover {
-  background: rgba(200, 113, 58, 0.04);
+  background: rgba(200, 113, 58, 0.06);
+  padding-left: 8px;
 }
 
 /* "+N more" overflow chip */
@@ -501,13 +564,15 @@ header {
   font-size: 11px;
   font-family: 'DM Sans', sans-serif;
   font-weight: 500;
-  padding: 5px 14px;
-  border-radius: 4px;
-  border: 1px solid var(--warm-gray);
-  background: var(--card-bg);
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 253, 249, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--muted);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -516,6 +581,8 @@ header {
 .action-btn:hover {
   border-color: var(--ink);
   color: var(--ink);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
 .action-btn svg {
@@ -570,21 +637,24 @@ header {
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: var(--ink);
+  background: rgba(30, 27, 24, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: var(--paper);
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  padding: 12px 24px;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
   z-index: 100;
   opacity: 0;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .toast.visible {
@@ -601,8 +671,8 @@ header {
 /* ---- Footer ---- */
 footer {
   margin-top: 48px;
-  padding-top: 20px;
-  border-top: 1px solid var(--warm-gray);
+  padding-top: 24px;
+  border-top: 1px solid var(--card-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -619,11 +689,11 @@ footer {
 
 .stat-num {
   font-family: 'Newsreader', serif;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 300;
   color: var(--ink);
   line-height: 1;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stat-label {
@@ -631,7 +701,7 @@ footer {
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: var(--muted);
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .last-refresh {
@@ -653,23 +723,30 @@ footer {
 
 /* ---- Animations ---- */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-header { animation: fadeUp 0.5s ease both; }
-.tab-cleanup-banner { animation: fadeUp 0.5s ease 0.1s both; }
-.nudge-banner { animation: fadeUp 0.5s ease 0.15s both; }
-.active-section .section-header { animation: fadeUp 0.5s ease 0.2s both; }
-.active-section .missions .mission-card:nth-child(1) { animation: fadeUp 0.4s ease 0.25s both; }
-.active-section .missions .mission-card:nth-child(2) { animation: fadeUp 0.4s ease 0.3s both; }
-.active-section .missions .mission-card:nth-child(3) { animation: fadeUp 0.4s ease 0.35s both; }
-.active-section .missions .mission-card:nth-child(4) { animation: fadeUp 0.4s ease 0.4s both; }
-.abandoned-section .section-header { animation: fadeUp 0.5s ease 0.45s both; }
-.abandoned-section .missions .mission-card:nth-child(1) { animation: fadeUp 0.4s ease 0.5s both; }
-.abandoned-section .missions .mission-card:nth-child(2) { animation: fadeUp 0.4s ease 0.55s both; }
-.abandoned-section .missions .mission-card:nth-child(3) { animation: fadeUp 0.4s ease 0.6s both; }
-footer { animation: fadeUp 0.5s ease 0.65s both; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+header { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.tab-cleanup-banner { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.nudge-banner { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+.active-section .section-header { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.active-section .missions .mission-card:nth-child(1) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+.active-section .missions .mission-card:nth-child(2) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both; }
+.active-section .missions .mission-card:nth-child(3) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
+.active-section .missions .mission-card:nth-child(4) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both; }
+.active-section .missions .mission-card:nth-child(5) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+.active-section .missions .mission-card:nth-child(6) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.50s both; }
+.abandoned-section .section-header { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+.abandoned-section .missions .mission-card:nth-child(1) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+.abandoned-section .missions .mission-card:nth-child(2) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.60s both; }
+.abandoned-section .missions .mission-card:nth-child(3) { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both; }
+footer { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both; }
 
 .deferred-list .deferred-item:nth-child(1) { animation-delay: 0.05s; }
 .deferred-list .deferred-item:nth-child(2) { animation-delay: 0.1s; }
@@ -909,6 +986,12 @@ footer { animation: fadeUp 0.5s ease 0.65s both; }
   top: 32px;
   max-height: calc(100vh - 64px);
   overflow-y: auto;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 20px;
 }
 
 /* On narrow screens, stack vertically */
